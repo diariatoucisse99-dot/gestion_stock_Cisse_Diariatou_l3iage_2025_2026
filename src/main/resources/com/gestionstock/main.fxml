@@ -12,11 +12,13 @@
       <VBox spacing="10.0" style="-fx-background-color: #203961; -fx-padding: 20;" BorderPane.alignment="CENTER">
          <children>
             <Label style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" text="GestionStock" />
+            <Label fx:id="labelUtilisateurConnecte" style="-fx-text-fill: #cccccc; -fx-font-size: 12;" text="" />
             <Separator prefWidth="200.0" />
             <Button fx:id="btnDashboard" mnemonicParsing="false" onAction="#afficherDashboard" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Dashbord" />
             <Button fx:id="btnProduits" layoutX="10.0" layoutY="40.0" mnemonicParsing="false" onAction="#afficherProduits" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Produits" />
             <Button fx:id="btnCategories" layoutX="10.0" layoutY="65.0" mnemonicParsing="false" onAction="#afficherCategories" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Categories" />
             <Button fx:id="btnFournisseurs" layoutX="10.0" layoutY="90.0" mnemonicParsing="false" onAction="#afficherFournisseurs" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Fournisseurs" />
+            <Button fx:id="btnDeconnexion" mnemonicParsing="false" onAction="#seDeconnecter" style="-fx-background-color: transparent; -fx-text-fill: #ff8080;" text="Déconnexion" />
          </children>
       </VBox>
    </left>
