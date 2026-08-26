@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="15.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionstock.controller.CategorieController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Gestion des Catégories" />
+
+        <HBox spacing="10.0">
+            <children>
+                <TextField fx:id="champNom" promptText="Nom de la catégorie" prefWidth="220.0" />
+                <TextField fx:id="champDescription" promptText="Description" prefWidth="260.0" />
+                <Button fx:id="btnEnregistrer" onAction="#enregistrerCategorie" styleClass="btn-primaire" text="Enregistrer" />
+                <Button fx:id="btnAnnuler" onAction="#annulerEdition" text="Annuler" />
+            </children>
+        </HBox>
+
+        <Label fx:id="labelMessage" style="-fx-text-fill: red;" text="" />
+
+        <TableView fx:id="tableCategories" prefWidth="640.0" prefHeight="350.0">
+            <columns>
+                <TableColumn fx:id="colonneNom" prefWidth="180.0" text="Nom" />
+                <TableColumn fx:id="colonneDescription" prefWidth="260.0" text="Description" />
+                <TableColumn fx:id="colonneNbProduits" prefWidth="140.0" text="Nb. produits rattachés" />
+            </columns>
+        </TableView>
+
+        <HBox spacing="10.0">
+            <children>
+                <Button fx:id="btnModifier" onAction="#chargerPourModification" text="Modifier la sélection" />
+                <Button fx:id="btnSupprimer" onAction="#supprimerCategorie" text="Supprimer la sélection" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
