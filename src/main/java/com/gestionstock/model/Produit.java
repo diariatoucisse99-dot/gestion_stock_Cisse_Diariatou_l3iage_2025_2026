@@ -41,7 +41,8 @@ public class Produit {
     @Column(nullable = false)
     private double prix;
 
-    private double prixPromo;
+    @Column(name = "prix_promo")
+    private Double prixPromo;
 
     @ManyToOne
     @JoinColumn(name = "categorie_id")
@@ -101,6 +102,14 @@ public class Produit {
 
     public void setPrix(double prix) {
         this.prix = prix;
+    }
+
+    public Double getPrixPromo() {
+        return prixPromo;
+    }
+
+    public void setPrixPromo(Double prixPromo) {
+        this.prixPromo = prixPromo;
     }
 
     public Categorie getCategorie() {
