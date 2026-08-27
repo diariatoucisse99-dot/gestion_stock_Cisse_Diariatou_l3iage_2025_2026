@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="15.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionstock.controller.MouvementController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Mouvements de Stock" />
+
+        <HBox spacing="10.0">
+            <children>
+                <ToggleButton fx:id="btnToutes" text="Toutes" selected="true" onAction="#filtrerToutes" />
+                <ToggleButton fx:id="btnEntrees" text="Entrées" onAction="#filtrerEntrees" />
+                <ToggleButton fx:id="btnSorties" text="Sorties" onAction="#filtrerSorties" />
+                <DatePicker fx:id="dateDebut" promptText="Début" />
+                <DatePicker fx:id="dateFin" promptText="Fin" />
+                <Button text="Filtrer par période" onAction="#filtrerParPeriode" />
+                <Button fx:id="btnNouveau" styleClass="btn-primaire" text="+ Nouveau Mouvement" onAction="#ouvrirDialogueNouveauMouvement" />
+            </children>
+        </HBox>
+
+        <TableView fx:id="tableMouvements" prefWidth="750.0" prefHeight="380.0">
+            <columns>
+                <TableColumn fx:id="colonneDate" prefWidth="150.0" text="Date" />
+                <TableColumn fx:id="colonneProduit" prefWidth="180.0" text="Produit" />
+                <TableColumn fx:id="colonneType" prefWidth="90.0" text="Type" />
+                <TableColumn fx:id="colonneQuantite" prefWidth="90.0" text="Quantité" />
+                <TableColumn fx:id="colonneMotif" prefWidth="220.0" text="Motif" />
+            </columns>
+        </TableView>
+    </children>
+</VBox>
