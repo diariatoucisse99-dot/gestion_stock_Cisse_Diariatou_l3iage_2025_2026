@@ -2,19 +2,20 @@ package com.gestionstock.controller;
 
 import com.gestionstock.model.Categorie;
 import com.gestionstock.model.Fournisseur;
+import com.gestionstock.model.Produit;
 import com.gestionstock.service.ProduitService;
 import com.gestionstock.service.ProduitServiceImpl;
-import com.gestionstock.model.Produit;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,8 @@ public class ProduitController {
     TableColumn<Produit, Integer> colonneNom;
     @FXML
     TableColumn<Produit, Double> colonnePrix;
+    @FXML
+    TableColumn<Produit, String> colonnePrixPromo;
     @FXML
     TableColumn<Produit, Integer> colonneStock;
     @FXML
@@ -61,6 +64,11 @@ public class ProduitController {
         // Lier chaque colonne à un attribut de la classe Produit
         colonneNom.setCellValueFactory( new PropertyValueFactory<>("nom"));
         colonnePrix.setCellValueFactory( new PropertyValueFactory<>("prix"));
+        // Prix promo : pas de simple getter direct affichable, on formate nous-mêmes ("-" si absent)
+        colonnePrixPromo.setCellValueFactory(data -> {
+            Double promo = data.getValue().getPrixPromo();
+            return new SimpleStringProperty(promo != null ? String.valueOf(promo) : "-");
+        });
         colonneStock.setCellValueFactory( new PropertyValueFactory<>("quantiteStock"));
         colonneStockMin.setCellValueFactory( new PropertyValueFactory<>("quantiteMin"));
         colonneCategorie.setCellValueFactory( data -> {
@@ -94,11 +102,63 @@ public class ProduitController {
         String rechercheMinuscule = recherche.trim().toLowerCase();
 
         ObservableList<Produit> resultats = listeProduits.filtered(produit ->
-                (produit.getNom() != null && produit.getNom().toLowerCase().contains(rechercheMinuscule))
-                        //|| (produit.getCategorie() != null && produit.getCategorie_nom().toLowerCase().contains(rechercheMinuscule))
+                        (produit.getNom() != null && produit.getNom().toLowerCase().contains(rechercheMinuscule))
+                //|| (produit.getCategorie() != null && produit.getCategorie_nom().toLowerCase().contains(rechercheMinuscule))
         );
 
         tableProduits.setItems(resultats);
+    }
+
+    // Ouvre le formulaire en mode "ajout" (produitAModifier = null)
+    @FXML
+    private void ouvrirDialogueAjout() {
+        ouvrirDialogueProduit(null);
+    }
+
+    // Ouvre le formulaire en mode "modification", préchargé avec le produit sélectionné
+    @FXML
+    private void ouvrirDialogueModification() {
+        Produit selection = tableProduits.getSelectionModel().getSelectedItem();
+        if (selection == null) {
+            Alert alerte = new Alert(Alert.AlertType.INFORMATION);
+            alerte.setHeaderText(null);
+            alerte.setContentText("Veuillez sélectionner un produit à modifier.");
+            alerte.showAndWait();
+            return;
+        }
+        ouvrirDialogueProduit(selection);
+    }
+
+    // Méthode commune : ouvre AddProduitDialog.fxml en fenêtre modale.
+    // produitAModifier == null -> mode ajout ; sinon -> mode modification pré-rempli
+    private void ouvrirDialogueProduit(Produit produitAModifier) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gestionstock/AddProduitDialog.fxml")
+            );
+            Parent racine = loader.load();
+
+            AddProduitController controleur = loader.getController();
+            controleur.setSurEnregistrement(this::chargerDonnees);
+            if (produitAModifier != null) {
+                controleur.chargerPourModification(produitAModifier);
+            }
+
+            Stage dialogue = new Stage();
+            dialogue.initModality(Modality.APPLICATION_MODAL);
+            dialogue.setTitle(produitAModifier == null ? "Nouveau Produit" : "Modifier le Produit");
+            dialogue.setScene(new Scene(racine));
+            dialogue.showAndWait();
+
+        } catch (Exception e) {
+            // Affichage d'erreur propre à l'utilisateur, comme demandé par le sujet
+            // (au lieu d'un simple printStackTrace silencieux)
+            Alert erreur = new Alert(Alert.AlertType.ERROR);
+            erreur.setHeaderText(null);
+            erreur.setContentText("Impossible d'ouvrir le formulaire produit.");
+            erreur.showAndWait();
+            e.printStackTrace();
+        }
     }
 
     @FXML

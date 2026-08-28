@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox spacing="12.0" style="-fx-background-color: white;"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionstock.controller.AddProduitController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label fx:id="labelTitre" style="-fx-font-size: 18; -fx-font-weight: bold;" text="Nouveau Produit" />
+
+        <Label text="Nom :" />
+        <TextField fx:id="champNom" promptText="Ex : Ordinateur portable" />
+
+        <Label text="Catégorie :" />
+        <ComboBox fx:id="comboCategorie" prefWidth="320.0" />
+
+        <Label text="Fournisseur :" />
+        <ComboBox fx:id="comboFournisseur" prefWidth="320.0" />
+
+        <Label text="Prix :" />
+        <TextField fx:id="champPrix" promptText="Ex : 450000" />
+
+        <Label text="Prix promo (optionnel) :" />
+        <TextField fx:id="champPrixPromo" promptText="Laisser vide si aucun" />
+
+        <Label text="Quantité en stock :" />
+        <TextField fx:id="champQuantiteStock" promptText="Ex : 10" />
+
+        <Label text="Quantité minimum :" />
+        <TextField fx:id="champQuantiteMin" promptText="Ex : 3" />
+
+        <Label fx:id="labelErreur" style="-fx-text-fill: red;" wrapText="true" text="" />
+
+        <HBox spacing="10.0">
+            <children>
+                <Button fx:id="btnEnregistrer" onAction="#enregistrer" styleClass="btn-primaire" text="Enregistrer" />
+                <Button fx:id="btnAnnuler" onAction="#annuler" text="Annuler" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
