@@ -3,3 +3,21 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
+
+.carte-stat {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0, 0, 2);
+}
+
+.carte-stat-titre {
+    -fx-font-size: 13;
+    -fx-text-fill: #808080;
+}
+
+.carte-stat-valeur {
+    -fx-font-size: 26;
+    -fx-font-weight: bold;
+    -fx-text-fill: #203961;
+}

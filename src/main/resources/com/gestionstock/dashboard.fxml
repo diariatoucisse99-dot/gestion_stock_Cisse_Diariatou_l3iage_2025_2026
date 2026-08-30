@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionstock.controller.DashboardController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Tableau de bord" />
+
+        <GridPane hgap="15.0" vgap="15.0">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+            </rowConstraints>
+            <children>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="0">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Total produits" />
+                        <Label fx:id="labelTotalProduits" styleClass="carte-stat-valeur" text="0" />
+                    </children>
+                </VBox>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="1">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Produits en stock bas" />
+                        <Label fx:id="labelStockBas" styleClass="carte-stat-valeur" text="0" />
+                    </children>
+                </VBox>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="2">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Valeur totale du stock" />
+                        <Label fx:id="labelValeurStock" styleClass="carte-stat-valeur" text="0" />
+                    </children>
+                </VBox>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="3">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Mouvements du jour" />
+                        <Label fx:id="labelMouvementsJour" styleClass="carte-stat-valeur" text="0" />
+                    </children>
+                </VBox>
+            </children>
+        </GridPane>
+
+        <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="⚠ Produits en rupture ou stock bas" />
+        <ListView fx:id="listeAlertesStock" prefHeight="220.0" />
+    </children>
+</VBox>
