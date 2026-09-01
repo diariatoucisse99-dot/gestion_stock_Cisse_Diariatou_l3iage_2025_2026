@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="15.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionstock.controller.UtilisateurController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Gestion des Utilisateurs" />
+
+        <TableView fx:id="tableUtilisateurs" prefWidth="700.0" prefHeight="380.0">
+            <columns>
+                <TableColumn fx:id="colonneNom" prefWidth="180.0" text="Nom" />
+                <TableColumn fx:id="colonneEmail" prefWidth="220.0" text="Email" />
+                <TableColumn fx:id="colonneRole" prefWidth="130.0" text="Rôle" />
+                <TableColumn fx:id="colonneActif" prefWidth="100.0" text="Statut" />
+            </columns>
+        </TableView>
+
+        <HBox spacing="10.0">
+            <children>
+                <Button fx:id="btnNouveau" styleClass="btn-primaire" onAction="#ouvrirDialogueNouveau" text="+ Nouvel utilisateur" />
+                <Button fx:id="btnActiver" onAction="#activerUtilisateur" text="Activer" />
+                <Button fx:id="btnDesactiver" onAction="#desactiverUtilisateur" text="Désactiver" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

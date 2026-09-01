@@ -1,6 +1,7 @@
 package com.gestionstock.service;
 
 import com.gestionstock.model.Utilisateur;
+import java.util.List;
 import java.util.Optional;
 
 public interface UtilisateurService {
@@ -10,4 +11,6 @@ public interface UtilisateurService {
     Utilisateur ajouter(Utilisateur utilisateur, String motDePasseClair);
 
     void activerDesactiver(Long id, boolean actif);
+
+    List<Utilisateur> findAllUtilisateurs();
 }

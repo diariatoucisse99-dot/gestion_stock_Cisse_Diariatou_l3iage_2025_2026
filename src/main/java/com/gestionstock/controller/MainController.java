@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -16,6 +17,9 @@ import javafx.stage.Stage;
  */
 
 public class MainController {
+    @FXML
+    private Button btnUtilisateurs;
+
     @FXML
     private StackPane contenuPrincipale;
 
@@ -28,6 +32,8 @@ public class MainController {
             labelUtilisateurConnecte.setText(
                     "Connecté : " + SessionUtilisateur.getUtilisateurConnecte().getNom()
             );
+            btnUtilisateurs.setVisible(SessionUtilisateur.estAdmin());
+            btnUtilisateurs.setManaged(SessionUtilisateur.estAdmin());
         }
         afficherDashboard();
     }
@@ -55,13 +61,17 @@ public class MainController {
     private void afficherMouvements() {chargerVue("/com/gestionstock/mouvements.fxml");}
 
     @FXML
+    private void afficherUtilisateurs() {
+        chargerVue("/com/gestionstock/utilisateurs.fxml");
+    }
+    @FXML
     private void seDeconnecter() {
         SessionUtilisateur.deconnecter();
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/gestionstock/LoginView.fxml")
             );
-            Parent racine = loader.load();
+            Parent racine = loader.load(); // charge le fichier xml et recupere lement racine
 
             Stage stage = (Stage) contenuPrincipale.getScene().getWindow();
             Scene scene = new Scene(racine);

@@ -5,6 +5,7 @@ import com.gestionstock.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.mindrot.jbcrypt.BCrypt;
+import java.util.List;
 
 import java.util.Optional;
 
@@ -65,6 +66,15 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             throw e;
         } finally {
             em.close();
+        }
+    }
+
+    @Override
+    public List<Utilisateur> findAllUtilisateurs() {
+        try (EntityManager em = JPAUtil.getEntityManager()) {
+            return em.createQuery(
+                    "SELECT u FROM Utilisateur u ORDER BY u.nom", Utilisateur.class
+            ).getResultList();
         }
     }
 }
