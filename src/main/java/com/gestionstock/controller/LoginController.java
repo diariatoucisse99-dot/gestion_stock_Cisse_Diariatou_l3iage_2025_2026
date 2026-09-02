@@ -46,6 +46,7 @@ public class LoginController {
             champMotDePasse.clear();
             return;
         }
+    //pour memoriser tout ceux qui sont connecter
 
         SessionUtilisateur.connecter(resultat.get());
         ouvrirMenuPrincipal();
@@ -58,6 +59,11 @@ public class LoginController {
             );
             Parent racine = loader.load();
 
+            /* ici on récupère la Stage via
+                 champEmail pour remplacer la scène de login
+                par le menu principal,
+                sans ouvrir une nouvelle fenêtre
+             */
             Stage stage = (Stage) champEmail.getScene().getWindow();
             Scene scene = new Scene(racine);
             scene.getStylesheets().add(
