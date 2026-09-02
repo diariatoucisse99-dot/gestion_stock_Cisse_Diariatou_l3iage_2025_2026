@@ -11,6 +11,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import com.gestionstock.util.SessionUtilisateur;
+import com.gestionstock.model.Utilisateur;
 
 public class AddMouvementController {
 
@@ -86,10 +88,11 @@ public class AddMouvementController {
         String motif = champMotif.getText().trim();
 
         try {
-            mouvementService.enregistrerMouvement(produit.getId(), type, quantite, motif);
-            if (surEnregistrement != null) {
-                surEnregistrement.run();
-            }
+            Long utilisateurId = SessionUtilisateur.getUtilisateurConnecte() != null
+                    ? SessionUtilisateur.getUtilisateurConnecte().getId()
+                    : null;
+
+            mouvementService.enregistrerMouvement(produit.getId(), type, quantite, motif, utilisateurId);
             fermerFenetre();
         } catch (Exception e) {
             labelErreur.setText(e.getMessage());

@@ -16,6 +16,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import com.gestionstock.service.CategorieService;
+import com.gestionstock.service.CategorieServiceImpl;
+import com.gestionstock.service.FournisseurService;
+import com.gestionstock.service.FournisseurServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +28,7 @@ public class ProduitController {
     @FXML
     TableView<Produit> tableProduits;
     @FXML
-    TableColumn<Produit, Integer> colonneNom;
+    TableColumn<Produit, String> colonneNom; // CORRIGÉ : Integer -> String
     @FXML
     TableColumn<Produit, Double> colonnePrix;
     @FXML
@@ -39,8 +43,16 @@ public class ProduitController {
     TableColumn<Produit, String> colonneFournisseur;
     @FXML
     TextField champRecherche;
+    @FXML
+    private ComboBox<Categorie> comboFiltreCategorie;
+    @FXML
+    private ComboBox<Fournisseur> comboFiltreFournisseur;
+    @FXML
+    private CheckBox checkStockBas;
 
     private final ProduitService produitService = new ProduitServiceImpl();
+    private final CategorieService categorieService = new CategorieServiceImpl();
+    private final FournisseurService fournisseurService = new FournisseurServiceImpl();
 
     // Liste complète chargée depuis la base, utilisée comme référence pour la recherche
     private ObservableList<Produit> listeProduits;
@@ -48,45 +60,97 @@ public class ProduitController {
     @FXML
     public void initialize() {
         configurerColones();
+        configurerAlerteStockBas();
+        configurerFiltres();
         chargerDonnees();
     }
 
-    private void configurerColones() {
-          /*
-            - PropertyValueFactory: indique à la colonne d'afficher la valeur retournée par getNom() sur chaque objet Produit
-            - ObservableList: C'est une liste spéciale qui permet de mettre à jour automatiquement TableView lorsque
-            des éléments sont ajoutés ou supprimés.
-            - FXCollections.observableArrayList: crée une ObservableList à partir d'objets
+    private void configurerAlerteStockBas() {
+        //lie le clic du CheckBox directement au filtre de stock bas
+        if (checkStockBas != null) {
+            checkStockBas.selectedProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
+        }
+    }
 
-            A RETENIR: PropertyValueFactory<>("nom") appelle automatiquement la méthode getNom()
-            de la classe Produit. Il faut donc que les getters soient définis dans la classe modèle
-         */
+    private void configurerFiltres() {
+        comboFiltreCategorie.setItems(FXCollections.observableArrayList(categorieService.findAllCategories()));
+        comboFiltreFournisseur.setItems(FXCollections.observableArrayList(fournisseurService.findAllFournisseurs()));
+
+        comboFiltreCategorie.valueProperty().addListener((obs, old, val) -> appliquerFiltres());
+        comboFiltreFournisseur.valueProperty().addListener((obs, old, val) -> appliquerFiltres());
+    }
+
+    @FXML
+    private void appliquerFiltres() {
+        Categorie categorieChoisie = comboFiltreCategorie.getValue();
+        Fournisseur fournisseurChoisi = comboFiltreFournisseur.getValue();
+        boolean stockBasUniquement = checkStockBas.isSelected();
+
+        ObservableList<Produit> resultats = listeProduits.filtered(produit -> {
+            boolean correspondCategorie = (categorieChoisie == null)
+                    || (produit.getCategorie() != null && produit.getCategorie().getId() == categorieChoisie.getId());
+
+            boolean correspondFournisseur = (fournisseurChoisi == null)
+                    || (produit.getFournisseur() != null && produit.getFournisseur().getId() == fournisseurChoisi.getId());
+
+            boolean correspondStockBas = !stockBasUniquement
+                    || produit.getQuantiteStock() <= produit.getQuantiteMin();
+
+            return correspondCategorie && correspondFournisseur && correspondStockBas;
+        });
+
+        tableProduits.setItems(resultats);
+    }
+
+    @FXML
+    private void reinitialiserFiltres() {
+        comboFiltreCategorie.setValue(null);
+        comboFiltreFournisseur.setValue(null);
+        checkStockBas.setSelected(false);
+        tableProduits.setItems(listeProduits);
+    }
+
+    private void configurerColones() {
+        tableProduits.setRowFactory(tv -> new javafx.scene.control.TableRow<Produit>() {
+            @Override
+            protected void updateItem(Produit produit, boolean vide) {
+                super.updateItem(produit, vide);
+                if (produit == null || vide) {
+                    setStyle("");
+                } else if (produit.getQuantiteStock() <= produit.getQuantiteMin()) {
+                    setStyle("-fx-background-color: #ffe0e0;");
+                } else {
+                    setStyle("");
+                }
+            }
+        });
+
         // Lier chaque colonne à un attribut de la classe Produit
-        colonneNom.setCellValueFactory( new PropertyValueFactory<>("nom"));
-        colonnePrix.setCellValueFactory( new PropertyValueFactory<>("prix"));
-        // Prix promo : pas de simple getter direct affichable, on formate nous-mêmes ("-" si absent)
+        colonneNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        colonnePrix.setCellValueFactory(new PropertyValueFactory<>("prix"));
+
         colonnePrixPromo.setCellValueFactory(data -> {
             Double promo = data.getValue().getPrixPromo();
             return new SimpleStringProperty(promo != null ? String.valueOf(promo) : "-");
         });
-        colonneStock.setCellValueFactory( new PropertyValueFactory<>("quantiteStock"));
-        colonneStockMin.setCellValueFactory( new PropertyValueFactory<>("quantiteMin"));
-        colonneCategorie.setCellValueFactory( data -> {
+
+        colonneStock.setCellValueFactory(new PropertyValueFactory<>("quantiteStock"));
+        colonneStockMin.setCellValueFactory(new PropertyValueFactory<>("quantiteMin"));
+
+        colonneCategorie.setCellValueFactory(data -> {
             Categorie cat = data.getValue().getCategorie();
             return new SimpleStringProperty(cat != null ? cat.getNom() : "");
         });
-        colonneFournisseur.setCellValueFactory( data -> {
+
+        colonneFournisseur.setCellValueFactory(data -> {
             Fournisseur fournisseur = data.getValue().getFournisseur();
             return new SimpleStringProperty(fournisseur != null ? fournisseur.getNom() : "");
         });
     }
 
     private void chargerDonnees() {
-        // Charger des données depuis la base via JDBC API
         List<Produit> produits = produitService.findAllProduits();
-
         listeProduits = FXCollections.observableArrayList(produits);
-
         tableProduits.setItems(listeProduits);
     }
 
@@ -102,20 +166,17 @@ public class ProduitController {
         String rechercheMinuscule = recherche.trim().toLowerCase();
 
         ObservableList<Produit> resultats = listeProduits.filtered(produit ->
-                        (produit.getNom() != null && produit.getNom().toLowerCase().contains(rechercheMinuscule))
-                //|| (produit.getCategorie() != null && produit.getCategorie_nom().toLowerCase().contains(rechercheMinuscule))
+                (produit.getNom() != null && produit.getNom().toLowerCase().contains(rechercheMinuscule))
         );
 
         tableProduits.setItems(resultats);
     }
 
-    // Ouvre le formulaire en mode "ajout" (produitAModifier = null)
     @FXML
     private void ouvrirDialogueAjout() {
         ouvrirDialogueProduit(null);
     }
 
-    // Ouvre le formulaire en mode "modification", préchargé avec le produit sélectionné
     @FXML
     private void ouvrirDialogueModification() {
         Produit selection = tableProduits.getSelectionModel().getSelectedItem();
@@ -129,8 +190,6 @@ public class ProduitController {
         ouvrirDialogueProduit(selection);
     }
 
-    // Méthode commune : ouvre AddProduitDialog.fxml en fenêtre modale.
-    // produitAModifier == null -> mode ajout ; sinon -> mode modification pré-rempli
     private void ouvrirDialogueProduit(Produit produitAModifier) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -151,8 +210,6 @@ public class ProduitController {
             dialogue.showAndWait();
 
         } catch (Exception e) {
-            // Affichage d'erreur propre à l'utilisateur, comme demandé par le sujet
-            // (au lieu d'un simple printStackTrace silencieux)
             Alert erreur = new Alert(Alert.AlertType.ERROR);
             erreur.setHeaderText(null);
             erreur.setContentText("Impossible d'ouvrir le formulaire produit.");

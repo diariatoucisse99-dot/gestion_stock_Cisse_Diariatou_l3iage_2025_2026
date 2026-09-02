@@ -17,4 +17,5 @@ public interface MouvementService {
     List<Mouvement> findByPeriode(LocalDateTime debut, LocalDateTime fin);
 
     void enregistrerMouvement(int produitId, TypeMouvement type, int quantite, String motif);
-}
+
+    void enregistrerMouvement(int produitId, TypeMouvement type, int quantite, String motif, Long utilisateurId);}

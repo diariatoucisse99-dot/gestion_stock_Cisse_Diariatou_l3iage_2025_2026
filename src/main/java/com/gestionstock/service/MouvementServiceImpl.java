@@ -5,6 +5,7 @@ import com.gestionstock.model.Produit;
 import com.gestionstock.model.enums.TypeMouvement;
 import com.gestionstock.util.JPAUtil;
 import jakarta.persistence.EntityManager;
+import com.gestionstock.model.Utilisateur;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -94,6 +95,61 @@ public class MouvementServiceImpl implements MouvementService {
             mouvement.setQuantite(quantite);
             mouvement.setMotif(motif);
             mouvement.setDateMouvement(LocalDateTime.now());
+
+            em.merge(produit);
+            em.persist(mouvement);
+
+            em.getTransaction().commit();
+
+        } catch (RuntimeException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    @Override
+    public void enregistrerMouvement(int produitId, TypeMouvement type, int quantite, String motif, Long utilisateurId) {
+        if (quantite <= 0) {
+            throw new IllegalArgumentException("La quantité doit être strictement positive.");
+        }
+        if (type == TypeMouvement.SORTIE && (motif == null || motif.isBlank())) {
+            throw new IllegalArgumentException("Le motif est obligatoire pour une sortie de stock.");
+        }
+
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            Produit produit = em.find(Produit.class, produitId);
+            if (produit == null) {
+                throw new IllegalArgumentException("Produit introuvable.");
+            }
+
+            if (type == TypeMouvement.ENTRE) {
+                produit.setQuantiteStock(produit.getQuantiteStock() + quantite);
+            } else {
+                if (quantite > produit.getQuantiteStock()) {
+                    throw new IllegalStateException(
+                            "Stock insuffisant : disponible = " + produit.getQuantiteStock() + ", demandé = " + quantite
+                    );
+                }
+                produit.setQuantiteStock(produit.getQuantiteStock() - quantite);
+            }
+
+            Mouvement mouvement = new Mouvement();
+            mouvement.setProduit(produit);
+            mouvement.setType(type);
+            mouvement.setQuantite(quantite);
+            mouvement.setMotif(motif);
+            mouvement.setDateMouvement(LocalDateTime.now());
+
+            if (utilisateurId != null) {
+                Utilisateur utilisateur = em.find(Utilisateur.class, utilisateurId);
+                mouvement.setUtilisateur(utilisateur);
+            }
 
             em.merge(produit);
             em.persist(mouvement);

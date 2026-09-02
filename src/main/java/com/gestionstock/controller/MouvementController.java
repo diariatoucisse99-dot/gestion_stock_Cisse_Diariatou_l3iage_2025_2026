@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import com.gestionstock.model.Utilisateur;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,6 +51,10 @@ public class MouvementController {
                 new SimpleStringProperty(data.getValue().getType().toString()));
         colonneQuantite.setCellValueFactory(new PropertyValueFactory<>("quantite"));
         colonneMotif.setCellValueFactory(new PropertyValueFactory<>("motif"));
+        colonneUtilisateur.setCellValueFactory(data -> {
+            Utilisateur u = data.getValue().getUtilisateur();
+            return new SimpleStringProperty(u != null ? u.getNom() : "-");
+        });
     }
 
     private void afficher(List<Mouvement> mouvements) {
@@ -71,6 +76,9 @@ public class MouvementController {
     private void filtrerSorties() {
         afficher(mouvementService.findByType(TypeMouvement.SORTIE));
     }
+
+    @FXML
+    private TableColumn<Mouvement, String> colonneUtilisateur;
 
     @FXML
     private void filtrerParPeriode() {
