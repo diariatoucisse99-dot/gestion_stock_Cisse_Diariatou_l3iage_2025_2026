@@ -5,6 +5,9 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -20,6 +23,16 @@
                 <Button mnemonicParsing="false" onAction="#ouvrirDialogueAjout" prefWidth="90.0" styleClass="btn-primaire" text="Ajouter" />
                 <Button mnemonicParsing="false" onAction="#ouvrirDialogueModification" prefWidth="90.0" text="Modifier" />
                 <Button fx:id="boutonSupprimer" mnemonicParsing="false" onAction="#supprimerProduit" prefWidth="90.0" text="Supprimer" />
+            </children>
+        </HBox>
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <children>
+                <Label text="Catégorie :" />
+                <ComboBox fx:id="comboFiltreCategorie" prefWidth="150.0" />
+                <Label text="Fournisseur :" />
+                <ComboBox fx:id="comboFiltreFournisseur" prefWidth="150.0" />
+                <CheckBox fx:id="checkStockBas" text="Stock bas uniquement" onAction="#appliquerFiltres" />
+                <Button text="Réinitialiser filtres" onAction="#reinitialiserFiltres" />
             </children>
         </HBox>
         <TableView fx:id="tableProduits" prefWidth="700.0">
