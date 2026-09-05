@@ -38,7 +38,7 @@ public class LoginController {
             labelErreur.setText("Veuillez remplir tous les champs.");
             return;
         }
-
+//force l'appelant a gerer les cas d'absences pou eviter les null
         Optional<Utilisateur> resultat = utilisateurService.authentifier(email, motDePasse);
 
         if (resultat.isEmpty()) {

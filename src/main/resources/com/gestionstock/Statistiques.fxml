@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestionstock.controller.StatistiqueController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Statistiques et Rapports" />
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <children>
+                <Label text="Période :" />
+                <DatePicker fx:id="dateDebut" promptText="Début" />
+                <DatePicker fx:id="dateFin" promptText="Fin" />
+                <Button text="Actualiser" onAction="#actualiser" styleClass="btn-primaire" />
+            </children>
+        </HBox>
+
+        <GridPane hgap="15.0" vgap="15.0">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+            </columnConstraints>
+            <children>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="0">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Valeur totale du stock" />
+                        <Label fx:id="labelValeurStock" styleClass="carte-stat-valeur" text="0" wrapText="true" />
+                    </children>
+                </VBox>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="1">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Produit le plus mouvementé" />
+                        <Label fx:id="labelProduitTop" styleClass="carte-stat-valeur" text="-" wrapText="true" style="-fx-font-size: 16;" />
+                    </children>
+                </VBox>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="2">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Catégorie plus forte valeur" />
+                        <Label fx:id="labelCategorieTop" styleClass="carte-stat-valeur" text="-" wrapText="true" style="-fx-font-size: 16;" />
+                    </children>
+                </VBox>
+                <VBox styleClass="carte-stat" GridPane.columnIndex="3">
+                    <children>
+                        <Label styleClass="carte-stat-titre" text="Ruptures évitées de justesse" />
+                        <Label fx:id="labelRuptures" styleClass="carte-stat-valeur" text="0" />
+                    </children>
+                </VBox>
+            </children>
+        </GridPane>
+
+        <HBox spacing="20.0">
+            <children>
+                <BarChart fx:id="graphiqueBarres" prefWidth="450.0" prefHeight="320.0" title="Quantité entrée vs sortie par mois">
+                    <xAxis>
+                        <CategoryAxis label="Mois" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Quantité" />
+                    </yAxis>
+                </BarChart>
+                <PieChart fx:id="graphiqueCamembert" prefWidth="380.0" prefHeight="320.0" title="Valeur du stock par catégorie" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

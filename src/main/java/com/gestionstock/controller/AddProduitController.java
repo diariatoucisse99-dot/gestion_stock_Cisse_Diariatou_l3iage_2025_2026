@@ -37,8 +37,29 @@ public class AddProduitController {
     public void initialize() {
         comboCategorie.setItems(FXCollections.observableArrayList(categorieService.findAllCategories()));
         comboFournisseur.setItems(FXCollections.observableArrayList(fournisseurService.findAllFournisseurs()));
-    }
 
+        comboCategorie.setConverter(new javafx.util.StringConverter<Categorie>() {
+            @Override
+            public String toString(Categorie categorie) {
+                return categorie != null ? categorie.getNom() : "";
+            }
+            @Override
+            public Categorie fromString(String string) {
+                return null; // pas nécessaire ici, le ComboBox n'est pas éditable
+            }
+        });
+
+        comboFournisseur.setConverter(new javafx.util.StringConverter<Fournisseur>() {
+            @Override
+            public String toString(Fournisseur fournisseur) {
+                return fournisseur != null ? fournisseur.getNom() : "";
+            }
+            @Override
+            public Fournisseur fromString(String string) {
+                return null;
+            }
+        });
+    }
     // Appelée depuis ProduitController pour préremplir le formulaire en mode modification
     public void chargerPourModification(Produit produit) {
         this.produitEnEdition = produit;

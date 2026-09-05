@@ -61,6 +61,9 @@ public class MainController {
     private void afficherMouvements() {chargerVue("/com/gestionstock/mouvements.fxml");}
 
     @FXML
+    private void afficherStatistiques() {chargerVue("/com/gestionstock/statistiques.fxml");}
+
+    @FXML
     private void afficherUtilisateurs() {
         chargerVue("/com/gestionstock/utilisateurs.fxml");
     }
