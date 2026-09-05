@@ -76,6 +76,28 @@ public class ProduitController {
         comboFiltreCategorie.setItems(FXCollections.observableArrayList(categorieService.findAllCategories()));
         comboFiltreFournisseur.setItems(FXCollections.observableArrayList(fournisseurService.findAllFournisseurs()));
 
+        comboFiltreCategorie.setConverter(new javafx.util.StringConverter<Categorie>() {
+            @Override
+            public String toString(Categorie categorie) {
+                return categorie != null ? categorie.getNom() : "";
+            }
+            @Override
+            public Categorie fromString(String string) {
+                return null;
+            }
+        });
+
+        comboFiltreFournisseur.setConverter(new javafx.util.StringConverter<Fournisseur>() {
+            @Override
+            public String toString(Fournisseur fournisseur) {
+                return fournisseur != null ? fournisseur.getNom() : "";
+            }
+            @Override
+            public Fournisseur fromString(String string) {
+                return null;
+            }
+        });
+
         comboFiltreCategorie.valueProperty().addListener((obs, old, val) -> appliquerFiltres());
         comboFiltreFournisseur.valueProperty().addListener((obs, old, val) -> appliquerFiltres());
     }
