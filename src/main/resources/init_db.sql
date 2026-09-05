@@ -65,3 +65,36 @@ INSERT INTO fournisseurs(nom, email, tel) VALUES
 INSERT INTO produits(nom, prix, quantite_stock, quantite_min, categorie_id, fournisseur_id) VALUES
     ("Ordinateur Portable", 550000.0, 15, 3, 1, 1),
     ("Bureau en bois", 87000.0, 8, 2, 2, 2);
+
+-- ==============================================================================================
+-- L'EXAMEN FINAL : prixPromo, utilisateurs, tracabilite des mouvements dont j'ai ajouté
+-- ==============================================================================================
+
+-- Colonne prix_promo sur produits (optionnelle, correspond a Double prixPromo en Java)
+ALTER TABLE produits ADD COLUMN prix_promo DECIMAL(12, 2) NULL;
+
+-- Table des utilisateurs (authentification)
+CREATE TABLE IF NOT EXISTS utilisateurs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    nom VARCHAR(100) NOT NULL,
+    mot_de_passe_hash VARCHAR(100) NOT NULL,
+    role ENUM('ADMIN', 'GESTIONNAIRE') NOT NULL,
+    date_creation DATE DEFAULT (CURRENT_DATE),
+    actif BOOLEAN NOT NULL DEFAULT TRUE
+    );
+
+-- Colonne de traçabilité sur mouvements (qui a fait le mouvement)
+ALTER TABLE mouvements ADD COLUMN utilisateur_id BIGINT NULL;
+ALTER TABLE mouvements ADD CONSTRAINT fk_mouvement_utilisateur
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id);
+
+-- Utilisateurs de test (mêmes comptes que sur PostgreSQL)
+-- admin@gestionstock.sn / mot de passe : admin123
+-- gestionnaire@gestionstock.sn / mot de passe : gestion123
+INSERT INTO utilisateurs (email, nom, mot_de_passe_hash, role) VALUES
+    ('admin@gestionstock.sn', 'Admin Principal', '$2a$12$PeLywNUe30p68bcFG8VMP.F9f4kSoQZQ0cUDeejhJMa.Tm4IKzYe.', 'ADMIN'),
+    ('gestionnaire@gestionstock.sn', 'Nadia Gestionnaire', '$2a$12$NV9lnb9gkRY733WXrF.33uuBx/bEpd15Rr7.cs82QiaGif1DkK2.6', 'GESTIONNAIRE');
+
+-- Mettre à jour un produit avec un prix promo pour tester l'affichage
+UPDATE produits SET prix_promo = 480000.0 WHERE nom = 'Ordinateur Portable';
